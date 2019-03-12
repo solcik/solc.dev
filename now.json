@@ -1,0 +1,12 @@
+{
+    "version": 2,
+    "name": "solc.dev",
+    "alias": "solc.dev",
+    "regions": ["bru"],
+    "builds": [
+        {
+            "src": "next.config.js",
+            "use": "@now/next"
+        }
+    ]
+}

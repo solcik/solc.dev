@@ -1,0 +1,6 @@
+@import '~bootstrap/dist/css/bootstrap.css';
+
+.social a .icon-img {
+	width: 30px;
+	height: 30px;
+}
