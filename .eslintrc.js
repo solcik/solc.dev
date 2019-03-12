@@ -16,6 +16,12 @@ module.exports = {
                 extensions: ['.js', '.jsx'],
             },
         ],
+        'react/jsx-props-no-spreading': [
+            1,
+            {
+                custom: 'ignore',
+            },
+        ],
     },
     globals: {
         window: true,

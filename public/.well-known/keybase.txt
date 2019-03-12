@@ -1,0 +1,54 @@
+==================================================================
+https://keybase.io/solcik
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://solc.dev
+  * I am solcik (https://keybase.io/solcik) on keybase.
+  * I have a public key ASDEMi2amKWatCfeevSbhLDtOcbVETQBlkjGZ5w1AnrkcQo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0101ce895df3373e997386dad728150aa6c7eef71ee23157a86a131b28dc97e76ede0a",
+      "host": "keybase.io",
+      "kid": "0120c4322d9a98a59ab427de7af49b84b0ed39c6d51134019648c6679c35027ae4710a",
+      "uid": "46f46f6486406dcf8917eb0995375019",
+      "username": "solcik"
+    },
+    "merkle_root": {
+      "ctime": 1581431714,
+      "hash": "c0125867ee23ab52cdf32bc58814bf792ee1f5198695dbd970cdfd45d479c312157d248a598874c310be5fb7c23dacc9e7c162c8ffb045f91ee14848b9f6f095",
+      "hash_meta": "f538b72842b11940d8ffe84e176d99e865b1a41a70bea7e606b6f65aa3bbf57b",
+      "seqno": 14567126
+    },
+    "service": {
+      "entropy": "b6KfqQZVIiXSBjqPdPH9aR6Z",
+      "hostname": "solc.dev",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.2.0"
+  },
+  "ctime": 1581431726,
+  "expire_in": 504576000,
+  "prev": "7043ebbb9f342ebef531d5c895935226f76cc674d5fe64b1ec9945fb37aee519",
+  "seqno": 26,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgxDItmpilmrQn3nr0m4Sw7TnG1RE0AZZIxmecNQJ65HEKp3BheWxvYWTESpcCGsQgcEPru580Lr71MdXIlZNSJvdsxnTV/mSx7JlF+zeu5RnEIHmd9GKdf9oa4gThggyRgCKONZA8j+KhChCweVD8XWmWAgHCo3NpZ8RA/541YToNMzcBnRBgwzZJs01LYcPxZ+OtPciX48n+zhDGckDDN5qlw4WaNfewjYi9YMBtiufwbRNlqeJmcnVRBahzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIHhSkRQReN5Kn7lUet78XgmDy+QmM30JwK98gv/9er0qo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/solcik
