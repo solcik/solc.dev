@@ -4,7 +4,9 @@
         "dev": "next",
         "build": "next build",
         "start": "next start",
+        "export": "next export",
         "eslint": "eslint .",
+        "now-build": "next build",
         "prettier": "prettier --write --list-different \"{{assets,pages}/**/*.{js,json,css},*.{js,json,css}}\""
     },
     "dependencies": {
