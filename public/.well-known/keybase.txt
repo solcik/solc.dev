@@ -20,13 +20,13 @@ To do so, I am signing this object:
       "username": "solcik"
     },
     "merkle_root": {
-      "ctime": 1581431714,
-      "hash": "c0125867ee23ab52cdf32bc58814bf792ee1f5198695dbd970cdfd45d479c312157d248a598874c310be5fb7c23dacc9e7c162c8ffb045f91ee14848b9f6f095",
-      "hash_meta": "f538b72842b11940d8ffe84e176d99e865b1a41a70bea7e606b6f65aa3bbf57b",
-      "seqno": 14567126
+      "ctime": 1581704841,
+      "hash": "46869fa5fad12fe28e0ef7db28f7c7c9c587c1b07eee8af3ca66267d26f530e4eaddbbf5fa53af5052b08ee5069d5f08b1839a1ff9d4baa5032f620779e253e1",
+      "hash_meta": "e00dc69aba2de07d6cd428f46955b6ff2ab798dc6a1d8498309f3c0a4bf88177",
+      "seqno": 14604932
     },
     "service": {
-      "entropy": "b6KfqQZVIiXSBjqPdPH9aR6Z",
+      "entropy": "jyERZgEVzwwBuezbjgXhIoCi",
       "hostname": "solc.dev",
       "protocol": "https:"
     },
@@ -37,18 +37,20 @@ To do so, I am signing this object:
     "name": "keybase.io go client",
     "version": "5.2.0"
   },
-  "ctime": 1581431726,
+  "ctime": 1581704848,
   "expire_in": 504576000,
-  "prev": "7043ebbb9f342ebef531d5c895935226f76cc674d5fe64b1ec9945fb37aee519",
-  "seqno": 26,
+  "prev": "55012389c25296f8f29a64071080c5184eb5e46c3ced9224bdae720fe6ead0f4",
+  "seqno": 31,
   "tag": "signature"
 }
 
 which yields the signature:
 
-hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgxDItmpilmrQn3nr0m4Sw7TnG1RE0AZZIxmecNQJ65HEKp3BheWxvYWTESpcCGsQgcEPru580Lr71MdXIlZNSJvdsxnTV/mSx7JlF+zeu5RnEIHmd9GKdf9oa4gThggyRgCKONZA8j+KhChCweVD8XWmWAgHCo3NpZ8RA/541YToNMzcBnRBgwzZJs01LYcPxZ+OtPciX48n+zhDGckDDN5qlw4WaNfewjYi9YMBtiufwbRNlqeJmcnVRBahzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIHhSkRQReN5Kn7lUet78XgmDy+QmM30JwK98gv/9er0qo3RhZ80CAqd2ZXJzaW9uAQ==
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgxDItmpilmrQn3nr0m4Sw7TnG1RE0AZZIxmecNQJ65HEKp3BheWxvYWTESpcCH8QgVQEjicJSlvjymmQHEIDFGE615Gw87ZIkva5yD+bq0PTEIMbsTc7J+dt7RWk8h/hvXAqOj/6+/Ngb4JZ3/dj34DhRAgHCo3NpZ8RALiab8XPtqsesJwalFHwkJdpRk0hjvqA8N+n74o3ZLV2lY5xdiJF7gG4R0wRV0E9P1KxSQqLXM5+7AsvrGNUiDahzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIGOp6ExTFATRPhv8517aH/i9F1ZIwRgtia5F6/+cNFlFo3RhZ80CAqd2ZXJzaW9uAQ==
 
 And finally, I am proving ownership of this host by posting or
 appending to this document.
 
 View my publicly-auditable identity here: https://keybase.io/solcik
+
+==================================================================
