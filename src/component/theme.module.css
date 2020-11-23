@@ -1,0 +1,9 @@
+.button {
+  all: initial;
+  font-family: inherit;
+  font-size: inherit;
+  color: aqua;
+  padding: 4px 8px;
+  font-weight: bold;
+  cursor: pointer;
+}

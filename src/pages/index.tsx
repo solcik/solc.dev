@@ -10,7 +10,7 @@ export default function HomePage(props: InferGetStaticPropsType<typeof getStatic
       {/*  <Theme />*/}
       {/*</header>*/}
 
-      <div className="text-black-900 dark:text-gray-100">
+      <div className="text-gray-900 dark:text-gray-100">
         <h1 className="text-5xl text-center mb-2">solc.dev</h1>
         <div className="flex flex-row justify-center space-x-2">
           <a
