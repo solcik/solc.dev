@@ -1,0 +1,7 @@
+Contact: https://solc.dev
+Contact: mailto:david@solc.dev
+Contact: tel:+420732520064
+Contact: https://keybase.io/solcik
+Contact: https://twitter.com/messages/compose?recipient_id=280982592
+Canonical: https://edu.ceskatelevize.cz/.well-known/security.txt
+Preferred-Languages: cs, en

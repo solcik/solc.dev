@@ -1,3 +1,12 @@
-.idea
 .next
+.idea
+.vercel
+
 node_modules
+
+*.pem
+.DS_Store
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
