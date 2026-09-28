@@ -89,7 +89,7 @@ export default function HomePage() {
             ))}
           </span>
           <span className="wordmark__tld" aria-hidden="true">
-            .dev
+            <span className="wordmark__ink">.dev</span>
           </span>
         </h1>
 

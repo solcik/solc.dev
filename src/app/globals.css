@@ -378,12 +378,20 @@
 
   .wordmark__tld {
     transform: translateZ(60px);
+  }
+
+  /* Gradient ink lives on a flat child: WebKit drops background-clip: text on
+     an element that is itself 3D-transformed, leaving it invisible until a
+     repaint (e.g. hover) happens. */
+  .wordmark__ink {
     padding-inline-end: 0.06em;
     background: linear-gradient(
       100deg in oklch longer hue,
       oklch(0.7 var(--chroma) var(--hue)),
       oklch(0.7 var(--chroma) calc(var(--hue) + 140))
     );
+    /* stylelint-disable-next-line property-no-vendor-prefix -- Safari < 18 */
+    -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     font-weight: 400;
@@ -510,11 +518,16 @@
       translate: 0 calc((var(--scale) - 1) * -45%);
       transform-origin: 50% 100%;
 
+      /* Grow the layout box with the scale so magnified tiles push their
+         neighbours apart instead of overlapping them. */
+      margin-inline: calc((var(--scale) - 1) * var(--tile) / 2);
+
       /* Magnetic pull from JS rides on `transform`, independent of scale/translate. */
       transform: translate(var(--pull-x, 0), var(--pull-y, 0));
       transition:
         scale 0.5s var(--ease-spring),
         translate 0.5s var(--ease-spring),
+        margin-inline 0.5s var(--ease-spring),
         transform 0.3s var(--ease-out),
         color 0.2s,
         background-color 0.2s;
@@ -558,6 +571,13 @@
     li:has(+ li:is(:hover, :focus-within)),
     li:is(:hover, :focus-within) + li {
       --scale: 1.18;
+    }
+
+    /* While a tile is magnified, only it follows the pointer — neighbours
+       leaning in would collide with it. */
+    :scope:has(li:hover) li:not(:hover) a {
+      --pull-x: 0;
+      --pull-y: 0;
     }
 
     .dock__tip {
@@ -939,7 +959,7 @@
   }
 
   @media (forced-colors: active) {
-    .wordmark__tld {
+    .wordmark__ink {
       color: LinkText;
       background: none;
     }
