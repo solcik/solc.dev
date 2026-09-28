@@ -1,0 +1,816 @@
+/*
+ * solc.dev — written in plain, untranspiled CSS.
+ *
+ * Browserslist targets evergreen browsers only, so everything below ships as-is:
+ * cascade layers, native nesting, @scope, @property, light-dark(), oklch() and
+ * relative colors, container queries, anchor positioning, view transitions,
+ * @starting-style, linear() easing, text-box trimming, sibling-index() and
+ * corner-shape. Newer bits are wrapped in @supports and degrade gracefully.
+ */
+
+@layer reset, tokens, base, layout, components, motion, utilities;
+
+/* ---------------------------------------------------------------- tokens */
+
+@property --hue {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 285;
+}
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+    interpolate-size: allow-keywords;
+
+    /* Brand hue drives everything; chroma gets a boost on wide-gamut screens. */
+    --brand-h: 285;
+    --chroma: 0.19;
+    --bg: light-dark(oklch(0.985 0.006 var(--brand-h)), oklch(0.16 0.025 var(--brand-h)));
+    --fg: light-dark(oklch(0.22 0.03 var(--brand-h)), oklch(0.96 0.012 var(--brand-h)));
+    --muted: color-mix(in oklch, var(--fg) 58%, var(--bg));
+    --surface: light-dark(
+      oklch(0.965 0.01 var(--brand-h) / 70%),
+      oklch(0.22 0.03 var(--brand-h) / 60%)
+    );
+    --surface-strong: light-dark(
+      oklch(1 0.004 var(--brand-h) / 90%),
+      oklch(0.28 0.035 var(--brand-h) / 85%)
+    );
+
+    /* One concrete brand color; every accent is derived with relative color syntax. */
+    --accent-base: oklch(0.63 var(--chroma) var(--brand-h));
+    --accent: light-dark(
+      oklch(from var(--accent-base) calc(l - 0.08) c h),
+      oklch(from var(--accent-base) calc(l + 0.15) calc(c * 0.8) h)
+    );
+    --accent-2: light-dark(
+      oklch(from var(--accent-base) calc(l - 0.08) c calc(h + 70)),
+      oklch(from var(--accent-base) calc(l + 0.15) calc(c * 0.8) calc(h + 70))
+    );
+    --line: color-mix(in oklch, var(--fg) 12%, transparent);
+    --ring: color-mix(in oklch, var(--accent) 70%, transparent);
+    --font-sans: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+    --radius: 1.1rem;
+    --ease-out: cubic-bezier(0.2, 0.9, 0.2, 1);
+    --ease-spring: linear(
+      0,
+      0.009,
+      0.035 2.1%,
+      0.141,
+      0.281 6.7%,
+      0.723 12.9%,
+      0.938 16.7%,
+      1.017,
+      1.077,
+      1.121,
+      1.149 24.3%,
+      1.159,
+      1.163,
+      1.161,
+      1.154 29.9%,
+      1.129 32.8%,
+      1.051 39.6%,
+      1.017 43.1%,
+      0.991,
+      0.977 51%,
+      0.974 53.8%,
+      0.975 57.1%,
+      0.997 69.8%,
+      1.003 76.9%,
+      1
+    );
+
+    /* Theme override: explicit attribute (set pre-paint from storage) or,
+       without JavaScript, the radio group itself via :has(). */
+    &:is([data-theme='light'], :has(.theme input[value='light']:checked)) {
+      color-scheme: light;
+    }
+
+    &:is([data-theme='dark'], :has(.theme input[value='dark']:checked)) {
+      color-scheme: dark;
+    }
+
+    @media (color-gamut: p3) {
+      --chroma: 0.25;
+    }
+
+    @media (prefers-contrast: more) {
+      --muted: var(--fg);
+      --line: color-mix(in oklch, var(--fg) 45%, transparent);
+    }
+  }
+}
+
+/* ----------------------------------------------------------------- reset */
+
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  * {
+    margin: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: none; /* stylelint-disable-line property-no-vendor-prefix -- Safari */
+    text-size-adjust: none;
+    hanging-punctuation: first last;
+  }
+
+  body {
+    min-block-size: 100dvb;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  svg {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  fieldset {
+    border: 0;
+    padding: 0;
+    min-inline-size: 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ base */
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
+    accent-color: var(--accent);
+    scrollbar-color: var(--muted) transparent;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--accent) 35%, transparent);
+  }
+
+  a {
+    color: inherit;
+    text-decoration-color: color-mix(in oklch, currentcolor 35%, transparent);
+    text-underline-offset: 0.2em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  p,
+  li,
+  summary {
+    text-wrap: pretty;
+  }
+}
+
+/* ---------------------------------------------------------------- layout */
+
+@layer layout {
+  body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    isolation: isolate;
+    overflow-x: clip;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0 1rem;
+  }
+
+  .hero {
+    container: hero / inline-size;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: clamp(1.25rem, 4cqi, 2.5rem);
+    padding: 2rem 1rem 3rem;
+    inline-size: 100%;
+  }
+
+  .colophon {
+    display: grid;
+    justify-items: center;
+    padding: 0 1rem max(1.5rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* ------------------------------------------------------------ components */
+
+@layer components {
+  /* Backdrop: a slow, composited aurora plus a faint engineering grid. */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: clip;
+    pointer-events: none;
+  }
+
+  .backdrop__aurora {
+    position: absolute;
+    inset: -30vmax;
+    background:
+      radial-gradient(
+        closest-side at 35% 40%,
+        oklch(from var(--accent-base) l c h / 45%),
+        transparent
+      ),
+      radial-gradient(
+        closest-side at 65% 55%,
+        oklch(from var(--accent-base) l c calc(h + 70) / 35%),
+        transparent
+      ),
+      radial-gradient(
+        closest-side at 50% 70%,
+        oklch(from var(--accent-base) l c calc(h - 60) / 30%),
+        transparent
+      );
+    filter: blur(60px) saturate(1.2);
+    opacity: 0.6;
+    animation: drift 48s linear infinite;
+  }
+
+  .backdrop__grid {
+    position: absolute;
+    inset: 0;
+
+    --cell: 56px;
+
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: var(--cell) var(--cell);
+    background-position: center;
+    mask-image: radial-gradient(ellipse 60% 55% at 50% 45%, #000 20%, transparent 75%);
+  }
+
+  /* Wordmark: fluid via container units, optically trimmed with text-box. */
+  .wordmark {
+    display: flex;
+    align-items: baseline;
+    font-size: clamp(3.5rem, 23cqi, 13rem);
+    font-weight: 650;
+    font-stretch: 88%;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-box: trim-both cap alphabetic;
+    user-select: none;
+  }
+
+  .wordmark__letters {
+    display: flex;
+  }
+
+  .wordmark__char {
+    display: inline-block;
+
+    /* A typographic "dock": hovered glyph swells, neighbours follow. */
+    &:hover {
+      font-weight: 800;
+      font-stretch: 100%;
+    }
+
+    &:has(+ :hover),
+    :hover + & {
+      font-weight: 730;
+      font-stretch: 94%;
+    }
+  }
+
+  .wordmark__tld {
+    padding-inline-end: 0.06em;
+    background: linear-gradient(
+      100deg in oklch longer hue,
+      oklch(0.7 var(--chroma) var(--hue)),
+      oklch(0.7 var(--chroma) calc(var(--hue) + 140))
+    );
+    background-clip: text;
+    color: transparent;
+    font-weight: 400;
+    animation: hue-cycle 14s linear infinite;
+  }
+
+  .byline {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+
+    /* Leave headroom for the magnified dock tiles and their tooltips. */
+    margin-block-end: 1.5rem;
+  }
+
+  /* Theme switch: radios + one sliding thumb tethered via anchor positioning. */
+  .theme {
+    position: relative;
+    display: inline-flex;
+    gap: 2px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    backdrop-filter: blur(12px);
+
+    & label {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      inline-size: 2.25rem;
+      block-size: 2rem;
+      border-radius: 999px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--fg);
+      }
+
+      &:has(:checked) {
+        color: var(--fg);
+        anchor-name: --theme-current;
+      }
+
+      &:has(:focus-visible) {
+        outline: 2px solid var(--ring);
+        outline-offset: 1px;
+      }
+    }
+
+    & input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  .theme__thumb {
+    position: absolute;
+    position-anchor: --theme-current;
+    inset: anchor(top) anchor(right) anchor(bottom) anchor(left);
+    border-radius: 999px;
+    background: var(--surface-strong);
+    box-shadow:
+      0 1px 2px oklch(0 0 0 / 12%),
+      inset 0 0 0 1px var(--line);
+    transition: inset 0.5s var(--ease-spring);
+  }
+
+  @supports not (anchor-name: --a) {
+    .theme__thumb {
+      display: none;
+    }
+
+    .theme label:has(:checked) {
+      background: var(--surface-strong);
+    }
+  }
+
+  /* Dock: squircle tiles that magnify on hover — neighbours included, via :has(). */
+  @scope (.dock) to (svg) {
+    :scope {
+      display: flex;
+      align-items: flex-end;
+
+      --tile: clamp(2.5rem, 12cqi, 3.25rem);
+      --pad: clamp(0.35rem, 1.8cqi, 0.6rem);
+
+      gap: var(--pad);
+      padding: var(--pad);
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + var(--pad));
+      background: var(--surface);
+      backdrop-filter: blur(16px) saturate(1.4);
+      box-shadow: 0 20px 50px -20px oklch(0 0 0 / 30%);
+    }
+
+    li {
+      position: relative;
+
+      --scale: 1;
+    }
+
+    a {
+      display: grid;
+      place-items: center;
+      inline-size: var(--tile);
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      background: linear-gradient(
+        160deg,
+        color-mix(in oklch, var(--surface-strong) 100%, transparent),
+        color-mix(in oklch, var(--surface-strong) 60%, transparent)
+      );
+      box-shadow: inset 0 0 0 1px var(--line);
+      color: var(--fg);
+      scale: var(--scale);
+      translate: 0 calc((var(--scale) - 1) * -45%);
+      transform-origin: 50% 100%;
+      transition:
+        scale 0.5s var(--ease-spring),
+        translate 0.5s var(--ease-spring),
+        color 0.2s,
+        background-color 0.2s;
+    }
+
+    li:is(:hover, :focus-within) {
+      --scale: 1.4;
+
+      & a {
+        color: var(--accent);
+      }
+    }
+
+    li:has(+ li:is(:hover, :focus-within)),
+    li:is(:hover, :focus-within) + li {
+      --scale: 1.18;
+    }
+
+    .dock__tip {
+      position: absolute;
+      inset-block-end: calc(100% + 2.4rem);
+      inset-inline-start: 50%;
+      translate: -50% 0.25rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 0.5rem;
+      background: var(--fg);
+      color: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity 0.2s,
+        translate 0.3s var(--ease-out);
+    }
+
+    li:is(:hover, :focus-within) .dock__tip {
+      opacity: 1;
+      translate: -50% 0;
+    }
+  }
+
+  @supports (corner-shape: squircle) {
+    .dock a {
+      corner-shape: squircle;
+      border-radius: calc(var(--radius) * 1.8);
+    }
+
+    .dock {
+      corner-shape: squircle;
+      border-radius: calc((var(--radius) + var(--pad)) * 1.8);
+    }
+  }
+
+  /* Colophon: <details> that animates to height:auto via interpolate-size. */
+  .colophon details {
+    max-inline-size: 36rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+
+    &::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size 0.5s var(--ease-out),
+        content-visibility 0.5s allow-discrete;
+    }
+
+    &[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  .colophon summary {
+    cursor: pointer;
+    list-style: none;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+    transition: color 0.2s;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:hover {
+      color: var(--fg);
+    }
+  }
+
+  .features {
+    container: features / inline-size;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    padding-block: 0.75rem 0.25rem;
+
+    & li {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Zero-specificity default so any feature rule below can light it up. */
+  :where(.features li)::before {
+    content: '○';
+    color: var(--muted);
+  }
+}
+
+/*
+ * Feature report card. Every mark below is switched on *by the feature itself*
+ * where possible (a rule living inside @layer, @scope or @container), or by
+ * an @supports query otherwise. No JavaScript involved.
+ */
+@layer components {
+  [data-feature='layer']::before {
+    content: '●';
+    color: var(--accent);
+  }
+
+  @scope (.features) {
+    [data-feature='scope']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @container features (inline-size > 0) {
+    [data-feature='container']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports selector(:has(*)) {
+    [data-feature='has']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (color: light-dark(red, red)) {
+    [data-feature='lightdark']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (color: oklch(from red l c h)) {
+    [data-feature='rcs']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (anchor-name: --a) {
+    [data-feature='anchor']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (view-transition-name: a) {
+    [data-feature='vt']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (transition-behavior: allow-discrete) {
+    [data-feature='starting']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (transition-timing-function: linear(0, 1)) {
+    [data-feature='linear']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (text-box: trim-both cap alphabetic) {
+    [data-feature='textbox']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (interpolate-size: allow-keywords) {
+    [data-feature='interpolate']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (order: sibling-index()) {
+    [data-feature='sibling']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+
+  @supports (corner-shape: squircle) {
+    [data-feature='squircle']::before {
+      content: '●';
+      color: var(--accent);
+    }
+  }
+}
+
+/* ---------------------------------------------------------------- motion */
+
+@layer motion {
+  @keyframes hue-cycle {
+    to {
+      --hue: 645;
+    }
+  }
+
+  @keyframes drift {
+    to {
+      rotate: 1turn;
+    }
+  }
+
+  /* Entrance choreography with @starting-style — no JS, no keyframes. */
+  .wordmark__char,
+  .wordmark__tld,
+  .byline,
+  .dock li {
+    --i: 0;
+    --stagger: 70ms;
+
+    transition:
+      opacity 0.9s var(--ease-out) calc(var(--i) * var(--stagger)),
+      filter 0.9s var(--ease-out) calc(var(--i) * var(--stagger)),
+      translate 0.9s var(--ease-spring) calc(var(--i) * var(--stagger)),
+      font-weight 0.45s var(--ease-out) 0s,
+      font-stretch 0.45s var(--ease-out) 0s;
+
+    @starting-style {
+      opacity: 0;
+      filter: blur(12px);
+      translate: 0 0.35em;
+    }
+  }
+
+  .dock li {
+    --stagger: 60ms;
+
+    @starting-style {
+      translate: 0 1.5rem;
+    }
+  }
+
+  .wordmark__tld {
+    --i: 5;
+  }
+
+  .byline {
+    --i: 7;
+  }
+
+  /* sibling-index() gives every glyph and tile its own delay for free… */
+  @supports (order: sibling-index()) {
+    .wordmark__char,
+    .dock li {
+      --i: sibling-index();
+    }
+
+    .dock li {
+      --i: calc(sibling-index() + 6);
+    }
+  }
+
+  /* …older engines fall back to a handful of :nth-child steps. */
+  @supports not (order: sibling-index()) {
+    .wordmark__char:nth-child(2) {
+      --i: 1;
+    }
+
+    .wordmark__char:nth-child(3) {
+      --i: 2;
+    }
+
+    .wordmark__char:nth-child(4) {
+      --i: 3;
+    }
+
+    .dock li {
+      --i: 7;
+
+      &:nth-child(2) {
+        --i: 8;
+      }
+
+      &:nth-child(3) {
+        --i: 9;
+      }
+
+      &:nth-child(4) {
+        --i: 10;
+      }
+
+      &:nth-child(5) {
+        --i: 11;
+      }
+
+      &:nth-child(6) {
+        --i: 12;
+      }
+    }
+  }
+
+  /* Theme change: circular reveal from the clicked control. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-new(root) {
+    animation: reveal 0.7s var(--ease-out);
+  }
+
+  @keyframes reveal {
+    from {
+      clip-path: circle(0 at var(--vt-x, 100%) var(--vt-y, 0));
+    }
+
+    to {
+      clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 100%) var(--vt-y, 0));
+    }
+  }
+
+  @view-transition {
+    navigation: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------- utilities */
+
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (forced-colors: active) {
+    .wordmark__tld {
+      color: LinkText;
+      background: none;
+    }
+
+    .theme__thumb {
+      background: Highlight;
+    }
+  }
+}

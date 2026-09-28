@@ -1,41 +1,36 @@
 {
   "name": "solc",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "private": true,
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
-    "debug": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
-    "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "stylelint": "stylelint \"./{resources,src}/**/*.{css,scss}\"",
-    "prettier": "prettier \"./{resources,src}/**/*.{js,jsx,ts,tsx,json,css,scss,yml,yaml}\" --list-different",
-    "prettier-all": "prettier \"./**/*.{js,jsx,ts,tsx,json,css,scss,yml,yaml}\" --list-different"
+    "typecheck": "tsc --noEmit",
+    "eslint": "eslint .",
+    "stylelint": "stylelint \"src/**/*.css\"",
+    "prettier": "prettier \"./src/**/*.{js,jsx,ts,tsx,json,css,yml,yaml}\" --list-different",
+    "prettier-all": "prettier \"./**/*.{js,jsx,mjs,ts,tsx,json,css,yml,yaml}\" --list-different"
   },
   "dependencies": {
-    "classnames": "^2.2.6",
-    "next": "^10.0.0",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "next": "^16.3.6",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "@types/node": "^14.14.7",
-    "@types/react": "^17.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.8.2",
-    "@typescript-eslint/parser": "^4.8.2",
-    "autoprefixer": "^10.0.2",
-    "eslint": "^7.13.0",
-    "postcss": "^8.1.9",
-    "postcss-dark-theme-class": "^0.5.1",
-    "postcss-preset-env": "^6.7.0",
-    "prettier": "^2.2.0",
-    "stylelint": "^13.7.2",
-    "stylelint-config-css-modules": "^2.2.0",
-    "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-standard": "^20.0.0",
-    "stylelint-order": "^4.1.0",
-    "stylelint-prettier": "^1.1.2",
-    "tailwindcss": "^2.0.1",
-    "typescript": "^4.0.5"
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "^16.3.6",
+    "prettier": "^3.9.9",
+    "stylelint": "^17.15.0",
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-prettier": "^5.0.3",
+    "typescript": "^5.9.3"
   }
 }
