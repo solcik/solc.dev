@@ -1,0 +1,4 @@
+# https://devenv.sh — reproducible dev shell: `devenv shell` or automatically via direnv.
+inputs:
+  nixpkgs:
+    url: github:cachix/devenv-nixpkgs/rolling

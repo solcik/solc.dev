@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: bun
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      next-react:
+        patterns: ['next', 'react', 'react-dom', '@types/react', '@types/react-dom']
+      test:
+        patterns: ['vitest', '@vitest/*', 'vitest-browser-react', 'playwright', '@playwright/test']
+      tooling:
+        patterns: ['oxlint', 'oxfmt', 'stylelint*', 'typescript', '@vitejs/*']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

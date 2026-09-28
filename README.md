@@ -1,40 +1,90 @@
 # solc.dev
 
-Personal site of David Šolc — Next.js 16 (App Router, static) + React 19, styled with
-plain, **untranspiled** modern CSS. Browserslist targets evergreen browsers only, so
-nothing gets downleveled.
+Personal site of David Šolc: Next.js 16 (App Router, fully static) + React 19, styled with
+plain, **untranspiled** modern CSS, plus a sprinkle of JavaScript special effects.
 
-## CSS highlights
+## Stack
 
-All styles live in [`src/app/globals.css`](src/app/globals.css).
+| Concern         | Tool                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------- |
+| Runtime         | Node 24 LTS (`.node-version`)                                                           |
+| Package manager | [Bun](https://bun.sh) (`packageManager` in `package.json`, `bun.lock`)                  |
+| Lint            | [oxlint](https://oxc.rs/docs/guide/usage/linter) + Stylelint for CSS                    |
+| Format          | [oxfmt](https://oxc.rs/docs/guide/usage/formatter)                                      |
+| Types           | TypeScript 7 (native `tsc`)                                                             |
+| Tests           | [Vitest](https://vitest.dev): `unit` project (Node) + `browser` project (real Chromium) |
+| E2E             | [Playwright](https://playwright.dev) against the production build                       |
+| Dev env         | [devenv.sh](https://devenv.sh) (Nix) + direnv                                           |
+| CI/CD           | GitHub Actions → Vercel (`fra1`)                                                        |
 
-| Feature                                   | Where                                                                                                 |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Cascade layers (`@layer`)                 | Whole stylesheet: `reset → tokens → base → layout → components → motion → utilities`                  |
-| `@scope … to (…)`                         | Dock component (donut scope stops at the SVG icons)                                                   |
-| `light-dark()` + `color-scheme`           | All color tokens; theme = `data-theme` attribute _or_ the radio group via `:has()` (works without JS) |
-| `oklch()`, relative colors, `color-mix()` | Palette derived from one brand color; extra chroma on `color-gamut: p3`                               |
-| `@property`                               | Animated `--hue` for the gradient `.dev` (`linear-gradient(in oklch longer hue …)`)                   |
-| Container queries + `cqi` units           | Fluid wordmark and dock sizing                                                                        |
-| `:has()`                                  | Theme without JS, dock neighbour magnification, glyph "dock" in the wordmark                          |
-| Anchor positioning                        | Sliding thumb in the theme switch tethers to the checked option                                       |
-| View Transitions API                      | Circular reveal on theme change, `@view-transition` for future pages                                  |
-| `@starting-style` + `sibling-index()`     | Staggered entrance with zero JS (`:nth-child` fallback)                                               |
-| `linear()` easing                         | Spring motion on tiles and the theme thumb                                                            |
-| `text-box: trim-both cap alphabetic`      | Optically tight wordmark                                                                              |
-| `interpolate-size` + `::details-content`  | Colophon `<details>` animates to `height: auto`                                                       |
-| `corner-shape: squircle`                  | Dock tiles, progressive enhancement                                                                   |
-| Variable font axes                        | `font-weight` / `font-stretch` morph on hover (Bricolage Grotesque)                                   |
+## Getting started
 
-The colophon at the bottom of the page lists these features and lights each one up **using
-the feature itself** (a rule inside `@layer`, `@scope`, `@container`) or an `@supports`
-query, so it's a live report card for the visitor's browser.
-
-## Development
+With devenv (recommended: pins Node, Bun and a working Chromium, installs git hooks):
 
 ```sh
-yarn install
-yarn dev          # http://localhost:3000
-yarn build
-yarn prettier && yarn stylelint && yarn eslint && yarn typecheck
+direnv allow        # or: devenv shell
+dev                 # next dev on http://localhost:3000
+check               # format · lint · typecheck · vitest
+e2e                 # build + Playwright
+devenv test         # what CI runs
 ```
+
+Without devenv: install Node 24 and Bun, then
+
+```sh
+bun install
+bunx playwright install chromium
+bun run dev
+bun run check
+bun run build && bun run test:e2e
+```
+
+## Email protection
+
+The contact address never appears in the HTML, the JS bundle or this repository in plain text.
+It's stored XOR-ed + base64url (`src/lib/email.ts`) and decoded only on real interaction
+(hover, focus, touch, click) by `<ProtectedEmailLink>`. E2E tests assert the served HTML
+contains no email address. To change it:
+
+```sh
+bun -e "import { encodeEmail } from './src/lib/email.ts'; console.log(encodeEmail('you@example.com'))"
+```
+
+> `public/.well-known/security.txt` intentionally still lists the address: RFC 9116
+> requires a contact there for security researchers.
+
+## Special effects
+
+| Effect           | How                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| Cursor spotlight | JS feeds `--mx/--my`; CSS lights up grid lines through a radial `mask-image` + glow      |
+| 3D wordmark      | Pointer-driven `rotateX/Y` (lerped in rAF), glyphs at `translateZ(sibling-index)` depths |
+| Magnetic dock    | Tiles lean towards the cursor via `transform`, independent of `scale`/`translate`        |
+| Border beam      | Registered `@property --angle` spins a conic gradient masked to a ring                   |
+| Text decode      | Byline scrambles from random glyphs on load and hover                                    |
+| Click burst      | Web Animations API particles + shockwave ring on the wordmark                            |
+| Party mode       | ↑↑↓↓←→←→BA animates the registered `--brand-h`, re-hueing the whole palette              |
+| Theme reveal     | View Transitions circular clip-path from the clicked control                             |
+
+Everything is progressive: without JS the page is complete, and motion bows out for
+`prefers-reduced-motion` and coarse pointers. Effect logic lives in pure, unit-tested
+functions (`src/effects/math.ts`), and DOM wiring in `src/effects/dom.ts` is browser-tested.
+
+## Modern CSS
+
+All styles live in [`src/app/globals.css`](src/app/globals.css): cascade layers, `@scope`,
+`@property`, `light-dark()`, `oklch()` + relative colors, container queries, `:has()`,
+anchor positioning, view transitions, `@starting-style`, `sibling-index()`, `linear()`
+easing, `text-box`, `interpolate-size`, `corner-shape`. The colophon on the page lights up
+each feature **using the feature itself** or `@supports`, so it's a live report card for the
+visitor's browser.
+
+## CI/CD
+
+- **CI** (`.github/workflows/ci.yml`), on PRs and `master`: format, lint and types; Vitest
+  (unit + browser); Playwright e2e on Chromium, Firefox, WebKit and mobile, with the HTML
+  report uploaded.
+- **Deploy** (`.github/workflows/deploy.yml`) runs after a green CI: previews for branches,
+  production for `master`. It's opt-in. Set the variables `VERCEL_ORG_ID` and
+  `VERCEL_PROJECT_ID` and the secret `VERCEL_TOKEN`, then disable Vercel's Git auto-deploy.
+- **Dependabot** keeps Bun deps and Actions current (grouped, weekly).

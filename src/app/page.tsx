@@ -1,6 +1,9 @@
 import type { ComponentType, SVGProps } from 'react';
 
+import Effects from '@/component/effects';
+import ProtectedEmailLink from '@/component/email';
 import ThemeSwitch from '@/component/theme';
+import { CONTACT_EMAIL } from '@/lib/email';
 import {
   FacebookIcon,
   GitHubIcon,
@@ -13,7 +16,8 @@ import {
 type Link = {
   id: string;
   label: string;
-  href: string;
+  /** Omit for the protected email link. */
+  href?: string;
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
 };
 
@@ -33,7 +37,7 @@ const links: Link[] = [
     Icon: FacebookIcon,
   },
   { id: 'keybase', label: 'Keybase', href: 'https://keybase.io/solcik', Icon: KeybaseIcon },
-  { id: 'mail', label: 'Email', href: 'mailto:david@solc.dev', Icon: MailIcon },
+  { id: 'mail', label: 'Email', Icon: MailIcon },
 ];
 
 /**
@@ -62,19 +66,23 @@ const word = 'solc';
 export default function HomePage() {
   return (
     <>
-      <div className="backdrop" aria-hidden="true">
+      <div className="backdrop" aria-hidden="true" data-fx="spotlight">
         <div className="backdrop__aurora" />
         <div className="backdrop__grid" />
+        <div className="backdrop__grid backdrop__grid--lit" />
+        <div className="backdrop__glow" />
       </div>
+      <Effects />
 
       <header className="topbar">
         <ThemeSwitch />
       </header>
 
       <main className="hero">
-        <h1 className="wordmark" aria-label="solc.dev">
+        <h1 className="wordmark" aria-label="solc.dev" data-fx="tilt burst">
           <span className="wordmark__letters" aria-hidden="true">
             {[...word].map((char, i) => (
+              // oxlint-disable-next-line react/no-array-index-key -- static text, never reorders
               <span key={i} className="wordmark__char">
                 {char}
               </span>
@@ -85,21 +93,28 @@ export default function HomePage() {
           </span>
         </h1>
 
-        <p className="byline">David Šolc</p>
+        <p className="byline">
+          <span className="sr-only">David Šolc</span>
+          <span aria-hidden="true" data-fx="scramble">
+            David Šolc
+          </span>
+        </p>
 
         <nav aria-label="Elsewhere">
           <ul className="dock">
             {links.map(({ id, label, href, Icon }) => {
-              const external = href.startsWith('http');
+              const icon = <Icon width="26" height="26" />;
               return (
-                <li key={id}>
-                  <a
-                    href={href}
-                    aria-label={label}
-                    {...(external ? { target: '_blank', rel: 'noopener noreferrer me' } : {})}
-                  >
-                    <Icon width="26" height="26" />
-                  </a>
+                <li key={id} data-fx="magnetic">
+                  {href ? (
+                    <a href={href} aria-label={label} target="_blank" rel="noopener noreferrer me">
+                      {icon}
+                    </a>
+                  ) : (
+                    <ProtectedEmailLink encoded={CONTACT_EMAIL} label={label}>
+                      {icon}
+                    </ProtectedEmailLink>
+                  )}
                   <span className="dock__tip" aria-hidden="true">
                     {label}
                   </span>

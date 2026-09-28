@@ -18,6 +18,19 @@
   initial-value: 285;
 }
 
+/* Registered so party mode can animate the whole palette through one number. */
+@property --brand-h {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 285;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
 @layer tokens {
   :root {
     color-scheme: light dark;
@@ -262,6 +275,66 @@
     mask-image: radial-gradient(ellipse 60% 55% at 50% 45%, #000 20%, transparent 75%);
   }
 
+  /* Spotlight (JS feeds --mx/--my): grid lines light up and a soft glow follows the cursor. */
+  .backdrop__grid--lit {
+    --line: color-mix(in oklch, var(--accent) 60%, transparent);
+
+    mask-image: radial-gradient(
+      220px circle at var(--mx, -999px) var(--my, -999px),
+      #000,
+      transparent
+    );
+  }
+
+  .backdrop__glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      560px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in oklch, var(--accent) 16%, transparent),
+      transparent 70%
+    );
+  }
+
+  .backdrop__grid--lit,
+  .backdrop__glow {
+    opacity: 0;
+    transition: opacity 0.8s;
+
+    .backdrop[data-lit] & {
+      opacity: 1;
+    }
+  }
+
+  /* Particles spawned by the wordmark click burst (Web Animations API). */
+  .fx-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    overflow: clip;
+    pointer-events: none;
+  }
+
+  .fx-particle {
+    position: absolute;
+    inline-size: var(--size);
+    aspect-ratio: 1;
+    border-radius: 30%;
+    background: oklch(0.8 var(--chroma) var(--hue));
+    box-shadow: 0 0 18px 2px oklch(0.8 var(--chroma) var(--hue) / 70%);
+  }
+
+  .fx-ring {
+    position: absolute;
+    inline-size: 260px;
+    aspect-ratio: 1;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    box-shadow:
+      0 0 24px var(--accent),
+      inset 0 0 24px var(--accent);
+  }
+
   /* Wordmark: fluid via container units, optically trimmed with text-box. */
   .wordmark {
     display: flex;
@@ -273,14 +346,22 @@
     letter-spacing: -0.02em;
     text-box: trim-both cap alphabetic;
     user-select: none;
+    cursor: crosshair;
+
+    /* 3D tilt towards the pointer (JS feeds --rx/--ry); glyphs float at
+       increasing depths so the word parallaxes as it turns. */
+    transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transform-style: preserve-3d;
   }
 
   .wordmark__letters {
     display: flex;
+    transform-style: preserve-3d;
   }
 
   .wordmark__char {
     display: inline-block;
+    transform: translateZ(calc(var(--i, 0) * 10px));
 
     /* A typographic "dock": hovered glyph swells, neighbours follow. */
     &:hover {
@@ -296,6 +377,7 @@
   }
 
   .wordmark__tld {
+    transform: translateZ(60px);
     padding-inline-end: 0.06em;
     background: linear-gradient(
       100deg in oklch longer hue,
@@ -411,6 +493,7 @@
     }
 
     a {
+      position: relative;
       display: grid;
       place-items: center;
       inline-size: var(--tile);
@@ -426,11 +509,42 @@
       scale: var(--scale);
       translate: 0 calc((var(--scale) - 1) * -45%);
       transform-origin: 50% 100%;
+
+      /* Magnetic pull from JS rides on `transform`, independent of scale/translate. */
+      transform: translate(var(--pull-x, 0), var(--pull-y, 0));
       transition:
         scale 0.5s var(--ease-spring),
         translate 0.5s var(--ease-spring),
+        transform 0.3s var(--ease-out),
         color 0.2s,
         background-color 0.2s;
+
+      /* Border beam: a registered --angle spins a conic gradient masked to a 1px ring. */
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 1.5px;
+        border-radius: inherit;
+        background: conic-gradient(
+          from var(--angle),
+          transparent 55%,
+          var(--accent),
+          var(--accent-2),
+          transparent 90%
+        );
+        mask:
+          linear-gradient(#000 0 0) content-box exclude,
+          linear-gradient(#000 0 0);
+        opacity: 0;
+        transition: opacity 0.3s;
+        animation: beam 2.4s linear infinite;
+        pointer-events: none;
+      }
+    }
+
+    li:is(:hover, :focus-within) a::after {
+      opacity: 1;
     }
 
     li:is(:hover, :focus-within) {
@@ -475,6 +589,10 @@
     .dock a {
       corner-shape: squircle;
       border-radius: calc(var(--radius) * 1.8);
+
+      &::after {
+        corner-shape: inherit;
+      }
     }
 
     .dock {
@@ -663,6 +781,23 @@
     to {
       rotate: 1turn;
     }
+  }
+
+  @keyframes beam {
+    to {
+      --angle: 1turn;
+    }
+  }
+
+  /* Party mode (Konami code): the entire palette spins around the hue wheel. */
+  @keyframes party {
+    to {
+      --brand-h: 645;
+    }
+  }
+
+  :root[data-party] {
+    animation: party 4s linear infinite;
   }
 
   /* Entrance choreography with @starting-style — no JS, no keyframes. */
